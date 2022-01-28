@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<OutputType>WinExe</OutputType>
+		<RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+		<TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+		<ResourceLanguages>en</ResourceLanguages>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+		<RootNamespace>AutoClicker</RootNamespace>
+		<AssemblyName>Auto Clicker</AssemblyName>
+		<PublishUrl>publish\</PublishUrl>
+		<Install>true</Install>
+		<MapFileExtensions>true</MapFileExtensions>
+		<ApplicationRevision>0</ApplicationRevision>
+		<ApplicationVersion>1.0.0</ApplicationVersion>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<FileVersion>1.0.0.0</FileVersion>
+		<Version>1.0.0.0</Version>
+		<UseWPF>true</UseWPF>
+		<Platforms>x64</Platforms>
+		<LangVersion>latest</LangVersion>
+		<Authors>Ollie Sharratt</Authors>
+		<BaseOutputPath>build\output\</BaseOutputPath>
+		<BaseIntermediateOutputPath>build\obj\</BaseIntermediateOutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<DebugType>none</DebugType>
+		<Optimize>true</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="build\**" />
+		<EmbeddedResource Remove="build\**" />
+		<None Remove="build\**" />
+		<Page Remove="build\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+	</ItemGroup>
+</Project>

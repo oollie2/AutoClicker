@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AutoClicker
+namespace AutoClicker.Classes
 {
     public class Win32Api
     {
