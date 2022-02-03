@@ -7,7 +7,7 @@ A release will be available once the below list has been completed.
 Known issues:
 
 * Start button to actually running seems slow.
-* DispatcherTimer interval is set, but the actual result seems off.
+* ~~DispatcherTimer interval is set, but the actual result seems off.~~
 * UI needs tidying.
 * Hardly tested.. so more bugs may come along!
 * For now.. if more than one instance is detected, nothing will happen.
