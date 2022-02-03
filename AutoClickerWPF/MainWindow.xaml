@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="300" Width="500">
+        Title="MainWindow" Height="319" Width="524">
     <Grid Margin="0,0,0,0">
         <StackPanel Height="168" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250">
             <Label Height="30"
@@ -66,6 +66,6 @@
         <Button Width="100" Height="40" Margin="300,202,0,0" Content="{Binding RightButtonContent, FallbackValue=Stop}" IsEnabled="{Binding RightButtonEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Click="RightButton_Click">
 
         </Button>
-        <Label Width="100" Height="25" Content="{Binding StartDateTime, FallbackValue=Date Started ...}" Margin="200,249,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="{Binding StartDateTimeVisible, FallbackValue=Hidden}"/>
+        <Label Width="auto" Height="25" Content="{Binding StartDateTime, FallbackValue=Date Started ...}" Margin="200,249,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="{Binding StartDateTimeVisible, FallbackValue=Hidden}"/>
     </Grid>
  </Window>
