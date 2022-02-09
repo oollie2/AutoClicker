@@ -13,35 +13,42 @@ namespace AutoClicker
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainBindings mainBindings;
-        private GetInstances getInstances;
-        private readonly Dictionary<Process, List<Clicker>> instanceClickers = new Dictionary<Process, List<Clicker>>();
+        private MainBindings MainBindings { get; set; }
+        private readonly Dictionary<Process, List<Clicker>> instanceClickers = new();
         public MainWindow()
         {
             InitializeComponent();
-            mainBindings = new();
-            DataContext = mainBindings;
+            MainBindings = new();
+            DataContext = MainBindings;
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            if (mainBindings == null)
+            if (MainBindings == null)
                 return;
             // First check an option is checked, otherwise there is nothing to do
-            if(mainBindings.LeftTopCheckBox || mainBindings.RightTopCheckBox)
+            if(MainBindings.LeftTopCheckBox || MainBindings.RightTopCheckBox)
             {
                 // Check the user has not deleted the data from the number selector
-                if(mainBindings.LeftUpDownText != null && mainBindings.RightUpDownText != null)
+                if(MainBindings.LeftUpDownText != null && MainBindings.RightUpDownText != null)
                 {
                     // Gather processes available and select one
-                    getInstances = new();
+                    GetInstances getInstances = new();
                     if (getInstances.Check())
                     {
-                        mainBindings.StartDateTime = "Started At: " + DateTime.Now.ToString("MMMM dd HH:mm tt");
-                        mainBindings.StartDateTimeVisible = Visibility.Visible;
-                        RunApplication();
+                        MainBindings.IndicatorLabel = "Started At: " + DateTime.Now.ToString("MMMM dd HH:mm tt");
+                        MainBindings.IndicatorLabelVisible = Visibility.Visible;
+                        RunApplication(getInstances);
                     }
                 }
+                else
+                {
+                    MainBindings.IndicatorLabel = "Not started - no delay selected.";
+                }
+            }
+            else
+            {
+                MainBindings.IndicatorLabel = "Not started - no selections made.";
             }
         }
 
@@ -49,7 +56,7 @@ namespace AutoClicker
         {
             Stop();
         }
-        private void RunApplication()
+        private void RunApplication(GetInstances getInstances)
         {
             foreach (Process process in getInstances.matchingProcesses)
             {
@@ -57,31 +64,30 @@ namespace AutoClicker
                 IntPtr processHandle = process.MainWindowHandle;
                 FocusToggle(processHandle);
 
-                mainBindings.LeftButtonEnabled = false;
-                mainBindings.LeftButtonContent = "Starting In: ";
+                MainBindings.LeftButtonEnabled = false;
+                MainBindings.LeftButtonContent = "Starting In: ";
                 Thread.Sleep(500);
 
-                mainBindings.LeftButtonContent += 5;
+                MainBindings.LeftButtonContent += 5;
                 Thread.Sleep(500);
                 for (var i = 4; i > 0; i--)
                 {
-                    mainBindings.LeftButtonContent.Remove(mainBindings.LeftButtonContent.Length - 1);
-                    mainBindings.LeftButtonContent += i;
+                    MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
+                    MainBindings.LeftButtonContent += i;
                     Thread.Sleep(500);
                 }
 
-                mainBindings.LeftButtonContent = "Running...";
+                MainBindings.LeftButtonContent = "Running...";
                 Thread.Sleep(500);
 
-                mainBindings.ApplicationEnabled = false;
+                MainBindings.ApplicationEnabled = false;
 
                 //Right click needs to be ahead of left click for concrete mining
-                if (mainBindings.RightTopCheckBox)
+                if (MainBindings.RightTopCheckBox)
                 {
-                    Classes.Button rightMouse = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1);
-                    Clicker clicker = new(rightMouse, processHandle);
+                    Clicker clicker = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
-                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(mainBindings.RightUpDownText));
+                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(MainBindings.RightUpDownText));
                     clicker.Start(ts);
                 }
 
@@ -90,20 +96,19 @@ namespace AutoClicker
                  * and it won't place the block in your second hand for some reason...
                  */
                 Thread.Sleep(100);
-                if (mainBindings.LeftTopCheckBox)
+                if (MainBindings.LeftTopCheckBox)
                 {
-                    Classes.Button leftMouse = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1);
-                    Clicker clicker = new(leftMouse, processHandle);
+                    Clicker clicker = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
-                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(mainBindings.LeftUpDownText));
+                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(MainBindings.LeftUpDownText));
                     clicker.Start(ts);
                 }
-                mainBindings.RightButtonEnabled = true;
+                MainBindings.RightButtonEnabled = true;
             }
         }
         private void Stop()
         {
-            mainBindings.RightButtonEnabled = false;
+            MainBindings.RightButtonEnabled = false;
             foreach (var clickers in instanceClickers.Values)
             {
                 foreach (var clicker in clickers)
@@ -113,9 +118,9 @@ namespace AutoClicker
             }
 
             instanceClickers.Clear();
-            mainBindings.ApplicationEnabled = true;
-            mainBindings.LeftButtonContent = "START";
-            mainBindings.LeftButtonEnabled = true;
+            MainBindings.ApplicationEnabled = true;
+            MainBindings.LeftButtonContent = "START";
+            MainBindings.LeftButtonEnabled = true;
         }
         private void AddToInstanceClickers(Process mcProcess, Clicker clicker)
         {

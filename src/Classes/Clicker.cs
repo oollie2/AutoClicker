@@ -5,15 +5,17 @@ namespace AutoClicker.Classes
 {
     internal class Clicker : IDisposable
     {
-        private Button button;
+        public uint UpCode { get; set; }
+        public uint DownCode { get; set; }
         private IntPtr handle;
         private readonly DispatcherTimer timer;
         private bool hold = false;
         private bool disposed;
-        public Clicker(Button _button, IntPtr process)
+        public Clicker(uint _downCode, uint _upCode, IntPtr process)
         {
             handle = process;
-            button = _button;
+            DownCode = _downCode;
+            UpCode = _upCode;
 
             timer = new();
             timer.Tick += Timer_Tick;
@@ -26,7 +28,7 @@ namespace AutoClicker.Classes
 
             if (hold)
                 //Select the handle with Alt+Tab to not stop holding (when using the program)
-                Win32Api.PostMessage(handle, button.DownCode, (IntPtr)0x0001, IntPtr.Zero);
+                Win32Api.PostMessage(handle, DownCode, (IntPtr)0x0001, IntPtr.Zero);
             else
             {
                 Click();
@@ -49,8 +51,8 @@ namespace AutoClicker.Classes
         }
         private void Click()
         {
-            Win32Api.PostMessage(handle, button.DownCode, IntPtr.Zero, IntPtr.Zero);
-            Win32Api.PostMessage(handle, button.UpCode, IntPtr.Zero, IntPtr.Zero);
+            Win32Api.PostMessage(handle, DownCode, IntPtr.Zero, IntPtr.Zero);
+            Win32Api.PostMessage(handle, UpCode, IntPtr.Zero, IntPtr.Zero);
         }
         #region Dispose
         public void Dispose()

@@ -22,7 +22,8 @@ namespace AutoClicker.Bindings
                 LeftButtonEnabled = true,
                 RightButtonEnabled = false,
                 ApplicationEnabled = true,
-                StartDateTimeVisible = Visibility.Hidden
+                IndicatorLabelVisible = Visibility.Visible,
+                IndicatorLabel = "Idle"
             };
         }
         private MainData mainData;
@@ -186,20 +187,20 @@ namespace AutoClicker.Bindings
                 OnPropertyChanged(nameof(RightButtonContent));
             }
         }
-        public string StartDateTime
+        public string IndicatorLabel
         {
             get
             {
                 if (mainData != null)
-                    return mainData.StartDateTime;
+                    return mainData.IndicatorLabel;
                 else
                     return "";
             }
             set
             {
-                if (StartDateTime != value)
-                    mainData.StartDateTime = value;
-                OnPropertyChanged(nameof(StartDateTime));
+                if (IndicatorLabel != value)
+                    mainData.IndicatorLabel = value;
+                OnPropertyChanged(nameof(IndicatorLabel));
             }
         }
         public bool LeftButtonEnabled
@@ -250,20 +251,20 @@ namespace AutoClicker.Bindings
                 OnPropertyChanged(nameof(ApplicationEnabled));
             }
         }
-        public Visibility StartDateTimeVisible
+        public Visibility IndicatorLabelVisible
         {
             get
             {
                 if (mainData != null)
-                    return mainData.StartDateTimeVisible;
+                    return mainData.IndicatorLabelVisible;
                 else
                     return Visibility.Hidden;
             }
             set
             {
-                if (StartDateTimeVisible != value)
-                    mainData.StartDateTimeVisible = value;
-                OnPropertyChanged(nameof(StartDateTimeVisible));
+                if (IndicatorLabelVisible != value)
+                    mainData.IndicatorLabelVisible = value;
+                OnPropertyChanged(nameof(IndicatorLabelVisible));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -284,10 +285,10 @@ namespace AutoClicker.Bindings
         public string RightUpDownText { get; set; }
         public string LeftButtonContent { get; set; }
         public string RightButtonContent { get; set; }
-        public string StartDateTime { get; set; }
+        public string IndicatorLabel { get; set; }
         public bool LeftButtonEnabled { get; set; }
         public bool RightButtonEnabled { get; set; }
         public bool ApplicationEnabled { get; set; }
-        public Visibility StartDateTimeVisible { get; set; }
+        public Visibility IndicatorLabelVisible { get; set; }
     }
 }

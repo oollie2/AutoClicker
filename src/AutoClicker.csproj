@@ -35,9 +35,13 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Remove="build\**" />
+		<Compile Remove="obj\**" />
 		<EmbeddedResource Remove="build\**" />
+		<EmbeddedResource Remove="obj\**" />
 		<None Remove="build\**" />
+		<None Remove="obj\**" />
 		<Page Remove="build\**" />
+		<Page Remove="obj\**" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="MahApps.Metro" Version="2.4.9" />
