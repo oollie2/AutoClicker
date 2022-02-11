@@ -66,42 +66,29 @@ namespace AutoClicker
 
                 MainBindings.LeftButtonEnabled = false;
                 MainBindings.LeftButtonContent = "Starting In: ";
-                Thread.Sleep(500);
-
                 MainBindings.LeftButtonContent += 5;
-                Thread.Sleep(500);
                 for (var i = 4; i > 0; i--)
                 {
                     MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
                     MainBindings.LeftButtonContent += i;
-                    Thread.Sleep(500);
                 }
 
                 MainBindings.LeftButtonContent = "Running...";
-                Thread.Sleep(500);
-
                 MainBindings.ApplicationEnabled = false;
 
-                //Right click needs to be ahead of left click for concrete mining
                 if (MainBindings.RightTopCheckBox)
                 {
                     Clicker clicker = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
-                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(MainBindings.RightUpDownText));
-                    clicker.Start(ts);
+                    clicker.Start(Convert.ToDouble(MainBindings.RightUpDownText));
                 }
 
-                /*
-                 * This sleep is needed, because if you want to mine concrete, then Minecraft starts to hold left click first
-                 * and it won't place the block in your second hand for some reason...
-                 */
                 Thread.Sleep(100);
                 if (MainBindings.LeftTopCheckBox)
                 {
                     Clicker clicker = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
-                    TimeSpan ts = TimeSpan.FromMilliseconds(Convert.ToInt32(MainBindings.LeftUpDownText));
-                    clicker.Start(ts);
+                    clicker.Start(Convert.ToDouble(MainBindings.LeftUpDownText));
                 }
                 MainBindings.RightButtonEnabled = true;
             }
