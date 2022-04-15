@@ -24,13 +24,14 @@ namespace AutoClicker
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
+            throw new Exception();
             if (MainBindings == null)
                 return;
             // First check an option is checked, otherwise there is nothing to do
-            if(MainBindings.LeftTopCheckBox || MainBindings.RightTopCheckBox)
+            if (CheckBools())
             {
                 // Check the user has not deleted the data from the number selector
-                if(MainBindings.LeftUpDownText != null && MainBindings.RightUpDownText != null)
+                if (MainBindings.LeftUpDownText != null && MainBindings.RightUpDownText != null)
                 {
                     // Gather processes available and select one
                     GetInstances getInstances = new();
@@ -50,6 +51,18 @@ namespace AutoClicker
             {
                 MainBindings.IndicatorLabel = "Not started - no selections made.";
             }
+        }
+
+        private bool CheckBools()
+        {
+            List<bool> bools = new();
+            bools.Add(MainBindings.LeftTopCheckBox);
+            bools.Add(MainBindings.LeftBottomCheckBox);
+            bools.Add(MainBindings.RightTopCheckBox);
+            bools.Add(MainBindings.RightBottomCheckBox);
+            if (bools.IndexOf(true) > -1) return true;
+            else return false;
+
         }
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
@@ -76,7 +89,7 @@ namespace AutoClicker
                 MainBindings.LeftButtonContent = "Running...";
                 MainBindings.ApplicationEnabled = false;
 
-                if (MainBindings.RightTopCheckBox)
+                if (MainBindings.RightTopCheckBox || MainBindings.RightBottomCheckBox)
                 {
                     Clicker clicker = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
@@ -84,7 +97,7 @@ namespace AutoClicker
                 }
 
                 Thread.Sleep(100);
-                if (MainBindings.LeftTopCheckBox)
+                if (MainBindings.LeftTopCheckBox || MainBindings.LeftBottomCheckBox)
                 {
                     Clicker clicker = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1, processHandle);
                     AddToInstanceClickers(process, clicker);
@@ -108,6 +121,7 @@ namespace AutoClicker
             MainBindings.ApplicationEnabled = true;
             MainBindings.LeftButtonContent = "START";
             MainBindings.LeftButtonEnabled = true;
+            MainBindings.IndicatorLabel = "Idle";
         }
         private void AddToInstanceClickers(Process mcProcess, Clicker clicker)
         {

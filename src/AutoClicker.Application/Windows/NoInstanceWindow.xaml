@@ -1,0 +1,18 @@
+﻿<Window x:Class="AutoClicker.NoInstanceWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding TitleText, FallbackValue=No Instances}"
+        Height="235"
+        Width="470"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize">
+    <Grid>
+        <TextBlock Margin="20,23,20,107" TextWrapping="Wrap" MaxWidth="430" Text="{Binding BodyText, FallbackValue=No instances}"/>
+        <ComboBox Margin="20,113,20,77" ItemsSource="{Binding Processes}" Text="{Binding ProcessesText}" IsTextSearchEnabled="True" IsEditable="True"/>
+        <Button Margin="235,159,130,20" Content="OK" Click="ButtonOK_Click"/>
+        <Button Margin="345,159,20,20" Content="Cancel" Click="ButtonCancel_Click"/>
+    </Grid>
+</Window>

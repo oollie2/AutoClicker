@@ -5,12 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="319" Width="524">
+        Title="Auto Clicker" 
+        Height="319" 
+        Width="490"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize">
     <Grid Margin="0,0,0,0">
-        <StackPanel Height="168" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250">
+        <StackPanel Margin="0,0,240,135">
             <Label Height="30"
                    Content="{Binding LeftTitle, FallbackValue=Left Title}"
                    HorizontalAlignment="Center"
+                   HorizontalContentAlignment="Center"
                    VerticalAlignment="Center"
                    FontFamily="Calibri"
                    FontWeight="Bold"
@@ -34,10 +39,11 @@
                 <mah:NumericUpDown Minimum="0" Grid.Row="2" Grid.Column="1" Width="100" Height="23" Value="{Binding LeftUpDownText, FallbackValue=0}" IsEnabled="{Binding ApplicationEnabled}" />
             </Grid>
         </StackPanel>
-        <StackPanel Margin="240,0,0,0" Height="168" VerticalAlignment="Top" HorizontalAlignment="Left" Width="250">
+        <StackPanel Margin="240,0,0,135">
             <Label Height="30"
                    Content="{Binding RightTitle, FallbackValue=Right Title}"
                    HorizontalAlignment="Center"
+                   HorizontalContentAlignment="Center"
                    FontFamily="Calibri"
                    FontWeight="Bold" 
                    FontSize="16"/>
@@ -60,12 +66,8 @@
                 <mah:NumericUpDown Minimum="0" Grid.Row="2" Grid.Column="1" Width="100" Height="23" Value="{Binding RightUpDownText, FallbackValue=0}" IsEnabled="{Binding ApplicationEnabled}"/>
             </Grid>
         </StackPanel>
-        <Button Width="100" Height="40" Margin="100,202,0,0" Content="{Binding LeftButtonContent, FallbackValue=Start}" IsEnabled="{Binding LeftButtonEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Click="LeftButton_Click">
-
-        </Button>
-        <Button Width="100" Height="40" Margin="300,202,0,0" Content="{Binding RightButtonContent, FallbackValue=Stop}" IsEnabled="{Binding RightButtonEnabled}" VerticalAlignment="Top" HorizontalAlignment="Left" Click="RightButton_Click">
-
-        </Button>
-        <Label Width="525" Height="25" Content="{Binding IndicatorLabel, FallbackValue=Idle}" Margin="0,249,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding IndicatorLabelVisible, FallbackValue=Visible}"/>
+        <Button Margin="100,202,290,61" Content="{Binding LeftButtonContent, FallbackValue=Start}" IsEnabled="{Binding LeftButtonEnabled}" Click="LeftButton_Click"/>
+        <Button Margin="300,202,90,61" Content="{Binding RightButtonContent, FallbackValue=Stop}" IsEnabled="{Binding RightButtonEnabled}" Click="RightButton_Click"/>
+        <Label Width="490" Content="{Binding IndicatorLabel, FallbackValue=Idle}" Margin="0,249,0,29" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding IndicatorLabelVisible, FallbackValue=Visible}"/>
     </Grid>
 </Window>
