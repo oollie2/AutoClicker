@@ -1,0 +1,6 @@
+<Project>
+ <PropertyGroup>
+   <MSBuildProjectExtensionsPath>$(ProjectDir)build\</MSBuildProjectExtensionsPath>
+	 <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+ </PropertyGroup>
+</Project>

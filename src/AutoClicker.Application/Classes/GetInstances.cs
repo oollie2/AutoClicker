@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoClicker.Bindings;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -17,28 +18,50 @@ namespace AutoClicker.Classes
         public List<Process> matchingProcesses { get; set; }
         public GetInstances()
         {
-            matchingProcesses = Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java") && WindowTitles.Any(title => b.MainWindowTitle.Contains(title))).ToList();
-
+            matchingProcesses = new List<Process>();
+            //WindowTitles.Any(title => b.MainWindowTitle.Contains(title))
+            matchingProcesses.AddRange(Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java")));
+            matchingProcesses.AddRange(Process.GetProcesses().Where(b => WindowTitles.Any(title => b.MainWindowTitle.Contains(title))));
         }
         internal bool Check()
         {
-            if(matchingProcesses != null && matchingProcesses.Any())
+            if (matchingProcesses != null && matchingProcesses.Any())
             {
                 if (matchingProcesses.Count > 1)
+                {
                     return Multiple();
+                }
                 else
+                {
                     return true;
+                }
             }
             else
             {
-                //TODO no matching processes found, prompt user to select a process
-                return false;
+                return NoInstances();
             }
         }
         internal bool Multiple()
         {
-            //TODO add user selection for a process
-            return false;
+            MultipleInstanceBindings binding = new();
+            MultipleInstanceWindow multipleInstanceWindow = new(binding);
+            bool check = (bool)multipleInstanceWindow.ShowDialog();
+            if (check)
+            {
+                matchingProcesses = multipleInstanceWindow.ProcessSelected;
+            }
+            return check;
+        }
+        internal bool NoInstances()
+        {
+            NoInstanceBindings binding = new();
+            NoInstanceWindow noInstanceWindow = new(binding);
+            bool check = (bool)noInstanceWindow.ShowDialog();
+            if (check)
+            {
+                matchingProcesses = noInstanceWindow.ProcessSelected;
+            }
+            return check;
         }
     }
 }

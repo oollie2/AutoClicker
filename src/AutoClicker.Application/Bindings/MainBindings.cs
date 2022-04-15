@@ -12,7 +12,7 @@ namespace AutoClicker.Bindings
                 LeftTitle = "Left Mouse Button",
                 RightTitle = "Right Mouse Button",
                 LeftTopCheckBox = false,
-                RightTopCheckBox = false,   
+                RightTopCheckBox = false,
                 LeftBottomCheckBox = false,
                 RightBottomCheckBox = false,
                 LeftUpDownText = "200",

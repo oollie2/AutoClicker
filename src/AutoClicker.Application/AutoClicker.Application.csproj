@@ -2,24 +2,34 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<OutputType>WinExe</OutputType>
-		<RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
 		<TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
 		<ResourceLanguages>en</ResourceLanguages>
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<RootNamespace>AutoClicker</RootNamespace>
 		<AssemblyName>Auto Clicker</AssemblyName>
+		<Company>oollie34</Company>
 		<PublishUrl>publish\</PublishUrl>
 		<Install>true</Install>
+		<InstallFrom>Disk</InstallFrom>
+		<UpdateEnabled>false</UpdateEnabled>
+		<UpdateMode>Foreground</UpdateMode>
+		<UpdateInterval>7</UpdateInterval>
+		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
+		<UpdatePeriodically>false</UpdatePeriodically>
+		<UpdateRequired>false</UpdateRequired>
 		<MapFileExtensions>true</MapFileExtensions>
 		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0</ApplicationVersion>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
-		<Version>1.0.0.0</Version>
+		<IsWebBootstrapper>false</IsWebBootstrapper>
+		<UseApplicationTrust>false</UseApplicationTrust>
+		<BootstrapperEnabled>true</BootstrapperEnabled>
+		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
 		<Platforms>x64</Platforms>
 		<LangVersion>latest</LangVersion>
-		<Authors>Ollie Sharratt</Authors>
+		<Authors>oollie34</Authors>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
 		<BaseOutputPath>build\output\</BaseOutputPath>
 		<BaseIntermediateOutputPath>build\obj\</BaseIntermediateOutputPath>
 	</PropertyGroup>
@@ -45,5 +55,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+	  <PackageReference Include="NLog" Version="4.7.15" />
 	</ItemGroup>
 </Project>

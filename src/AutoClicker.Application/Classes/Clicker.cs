@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Windows.Threading;
+using System.Timers;
 
 namespace AutoClicker.Classes
 {
@@ -8,7 +8,7 @@ namespace AutoClicker.Classes
         public uint UpCode { get; set; }
         public uint DownCode { get; set; }
         private IntPtr handle;
-        private readonly DispatcherTimer timer;
+        private readonly Timer timer;
         private bool hold = false;
         private bool disposed;
         public Clicker(uint _downCode, uint _upCode, IntPtr process)
@@ -18,13 +18,13 @@ namespace AutoClicker.Classes
             UpCode = _upCode;
 
             timer = new();
-            timer.Tick += Timer_Tick;
+            timer.Elapsed += Timer_Tick;
         }
 
-        public void Start(TimeSpan delay)
+        public void Start(double delay)
         {
             Stop();
-            hold = (delay.TotalMilliseconds == 0);
+            hold = (delay == 0);
 
             if (hold)
                 //Select the handle with Alt+Tab to not stop holding (when using the program)
