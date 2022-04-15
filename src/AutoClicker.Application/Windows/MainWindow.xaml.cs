@@ -24,7 +24,6 @@ namespace AutoClicker
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new Exception();
             if (MainBindings == null)
                 return;
             // First check an option is checked, otherwise there is nothing to do

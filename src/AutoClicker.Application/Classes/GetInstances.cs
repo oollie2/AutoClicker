@@ -19,7 +19,6 @@ namespace AutoClicker.Classes
         public GetInstances()
         {
             matchingProcesses = new List<Process>();
-            //WindowTitles.Any(title => b.MainWindowTitle.Contains(title))
             matchingProcesses.AddRange(Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java")));
             matchingProcesses.AddRange(Process.GetProcesses().Where(b => WindowTitles.Any(title => b.MainWindowTitle.Contains(title))));
         }
