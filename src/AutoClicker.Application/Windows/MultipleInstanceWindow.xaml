@@ -8,7 +8,8 @@
         Height="235"
         Width="470"
         SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBlock Margin="20,23,20,130" TextWrapping="Wrap" MaxWidth="430" Text="{Binding BodyText, FallbackValue=Multiple Instances}"/>
         <ListBox Margin="20,85,20,105" ItemsSource="{Binding Processes}" SelectionMode="Multiple" SelectionChanged="ListBox_SelectionChanged"/>

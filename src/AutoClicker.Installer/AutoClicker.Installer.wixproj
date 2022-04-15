@@ -67,9 +67,9 @@
   </Target>
   <Target Name="BeforeBuild" DependsOnTargets="ResolveReferences">
     <PropertyGroup>
-      <LinkerBaseInputPaths>"%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows"</LinkerBaseInputPaths>
-      <DefineConstants>BasePath=%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows</DefineConstants>
+      <LinkerBaseInputPaths>"%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64"</LinkerBaseInputPaths>
+      <DefineConstants>BasePath=%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64</DefineConstants>
     </PropertyGroup>
-    <HeatDirectory OutputFile="_doNotEdit-PublishOutput.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="AutoClicker_Project" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" Transforms="RemoveNotRequired.xslt" RunAsSeparateProcess="true" />
+    <HeatDirectory OutputFile="_doNotEdit-PublishOutput.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="AutoClicker_Project" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" Transforms="RemoveNotRequired.xslt" RunAsSeparateProcess="true" />
   </Target>
 </Project>
