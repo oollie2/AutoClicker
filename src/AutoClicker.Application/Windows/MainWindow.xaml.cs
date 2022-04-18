@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using AutoClicker.Bindings;
 using AutoClicker.Classes;
@@ -15,6 +16,7 @@ namespace AutoClicker
     {
         private MainBindings MainBindings { get; set; }
         private readonly Dictionary<Process, List<Clicker>> instanceClickers = new();
+        private GetInstances Instances;
         public MainWindow()
         {
             InitializeComponent();
@@ -33,12 +35,10 @@ namespace AutoClicker
                 if (MainBindings.LeftUpDownText != null && MainBindings.RightUpDownText != null)
                 {
                     // Gather processes available and select one
-                    GetInstances getInstances = new();
-                    if (getInstances.Check())
+                    Instances = new();
+                    if (Instances.Check())
                     {
-                        MainBindings.IndicatorLabel = "Started At: " + DateTime.Now.ToString("MMMM dd HH:mm tt");
-                        MainBindings.IndicatorLabelVisible = Visibility.Visible;
-                        RunApplication(getInstances);
+                        DelayedStart(5000);
                     }
                 }
                 else
@@ -51,7 +51,24 @@ namespace AutoClicker
                 MainBindings.IndicatorLabel = "Not started - no selections made.";
             }
         }
-
+        private void Start()
+        {
+            MainBindings.IndicatorLabel = "Started At: " + DateTime.Now.ToString("MMMM dd HH:mm tt");
+            MainBindings.IndicatorLabelVisible = Visibility.Visible;
+            RunApplication();
+        }
+        private async void DelayedStart(int millisecondsDelay)
+        {
+            long tickStop = Environment.TickCount + millisecondsDelay;
+            while (Environment.TickCount < tickStop)
+            {
+                await Task.Run(() =>
+                {
+                    MainBindings.IndicatorLabel = "Starting in " + Math.Round((double)(tickStop - Environment.TickCount) / 1000, 0) + " Seconds";
+                });
+            }
+            Start();
+        }
         private bool CheckBools()
         {
             List<bool> bools = new();
@@ -68,9 +85,9 @@ namespace AutoClicker
         {
             Stop();
         }
-        private void RunApplication(GetInstances getInstances)
+        private void RunApplication()
         {
-            foreach (Process process in getInstances.matchingProcesses)
+            foreach (Process process in Instances.matchingProcesses)
             {
 
                 IntPtr processHandle = process.MainWindowHandle;
@@ -117,6 +134,7 @@ namespace AutoClicker
             }
 
             instanceClickers.Clear();
+            Instances = null;
             MainBindings.ApplicationEnabled = true;
             MainBindings.LeftButtonContent = "START";
             MainBindings.LeftButtonEnabled = true;
