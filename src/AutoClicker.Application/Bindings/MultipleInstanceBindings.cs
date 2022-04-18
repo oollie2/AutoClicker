@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoClicker.Classes;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -9,12 +10,17 @@ namespace AutoClicker.Bindings
     {
         public MultipleInstanceBindings()
         {
+            List<Process> matchingProcesses = Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java") && GetInstances.WindowTitles.Any(title => b.MainWindowTitle.Contains(title))).ToList();
             mainData = new()
             {
                 TitleText = "No Client Found",
                 BodyText = "Multiple Minecraft instances found. Which ones would you like to run the auto-clicker on?",
-                Processes = Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java")).OrderBy(b => b.MainWindowTitle).Select(b => b.MainWindowTitle).ToList()
+                Processes = new()
             };
+            foreach(Process p in matchingProcesses)
+            {
+                mainData.Processes.Add(p.MainWindowTitle);
+            }
         }
         private MultipleInstanceData mainData;
         public string TitleText
