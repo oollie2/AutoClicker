@@ -1,13 +1,15 @@
 # Auto Clicker
 
 A WPF based fork of https://github.com/smith-j-travis/MinecraftAutoClicker
-Currently targets Minecraft which can be updated further in the future.
+Currently targets Minecraft, RL Craft and Java Windows.
 A release will be available once the below list has been completed.
 
-Known issues / Pre release features:
+## 1.0.0 features:
+* Small and fast, using the latest technology from .NET 6.
+* Ability to choose a combination of mouse functions.
+* If no windows are found, the user can select a running process.
+* If multiple available windows are found, the user can select one or many processes.
+* Automatic exception logging - can be found in %APPDATA%\oollie34\AutoClicker\Logs\
 
-* Lots of performance improvements
-* DispatcherTimer interval is set, but the actual result seems off sometimes.
-* UI needs tidying more.
-* For now.. if more than one instance is detected, nothing will happen.
-* Also if no instances are detected, nothing will happen.
+## Known issues:
+* So far... none!

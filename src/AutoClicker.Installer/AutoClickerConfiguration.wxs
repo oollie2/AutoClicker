@@ -9,6 +9,7 @@
 			InstallPrivileges="elevated" />
 		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." AllowSameVersionUpgrades="no"/>
 		<MediaTemplate EmbedCab="yes" />
+		<Property Id="REINSTALLMODE" Value="amus" />
 
 		<Condition Message="You must be an administrator to install this product">Privileged</Condition>
 		<Feature Id="AutoClicker_Version" Title="AutoClicker_Version" Level="1" />

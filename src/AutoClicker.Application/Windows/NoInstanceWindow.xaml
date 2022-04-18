@@ -8,7 +8,8 @@
         Height="235"
         Width="470"
         SizeToContent="WidthAndHeight"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBlock Margin="20,23,20,107" TextWrapping="Wrap" MaxWidth="430" Text="{Binding BodyText, FallbackValue=No instances}"/>
         <ComboBox Margin="20,113,20,77" ItemsSource="{Binding Processes}" Text="{Binding ProcessesText}" IsTextSearchEnabled="True" IsEditable="True"/>
