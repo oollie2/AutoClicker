@@ -15,7 +15,7 @@ namespace AutoClicker.Bindings
                 ProcessesText = "Select a Process",
                 BodyText = "No game window was found. This may mean you're using a modded client. If you're sure the window is running, please select it from the processes listed below.",
                 Processes = Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java")).OrderBy(b => b.MainWindowTitle).Select(b => b.MainWindowTitle).ToList()
-            };
+        };
         }
         private NoInstanceData mainData;
         public string TitleText

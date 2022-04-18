@@ -1,4 +1,4 @@
-﻿using AutoClicker.Bindings;
+using AutoClicker.Bindings;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace AutoClicker.Classes
     /// </summary>
     internal class GetInstances
     {
-        private static readonly List<string> WindowTitles = new()
+        public static readonly List<string> WindowTitles = new()
         {
             "Minecraft",
             "RLCraft"
@@ -18,9 +18,7 @@ namespace AutoClicker.Classes
         public List<Process> matchingProcesses { get; set; }
         public GetInstances()
         {
-            matchingProcesses = new List<Process>();
-            matchingProcesses.AddRange(Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java")));
-            matchingProcesses.AddRange(Process.GetProcesses().Where(b => WindowTitles.Any(title => b.MainWindowTitle.Contains(title))));
+            matchingProcesses = Process.GetProcesses().Where(b => b.ProcessName.StartsWith("java") && WindowTitles.Any(title => b.MainWindowTitle.Contains(title))).ToList();
         }
         internal bool Check()
         {
