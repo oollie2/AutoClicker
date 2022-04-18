@@ -11,10 +11,11 @@ namespace AutoClicker
     public partial class App : Application
     {
         private Logging Logger;
+        public static string LogLocation = Environment.ExpandEnvironmentVariables(@"%APPDATA%\oollie34\AutoClicker\Logs\");
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             Logger = new();
-            Logger.ExceptionLocation = Environment.ExpandEnvironmentVariables(@"%APPDATA%\oollie34\AutoClicker\Logs\");
+            Logger.ExceptionLocation = LogLocation;
             Logger.ExceptionLogging = true;
             Logger.DeleteOld();
 
