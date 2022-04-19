@@ -11,5 +11,8 @@ A release will be available once the below list has been completed.
 * If multiple available windows are found, the user can select one or many processes.
 * Automatic exception logging - can be found in %APPDATA%\oollie34\AutoClicker\Logs\
 
-## Known issues:
-* So far... none!
+## ChangeLog:
+### 1.0.0
+* Initial release.
+### 1.0.1
+* Fix for an issue where the app could display and attach to the same process multiple times.
