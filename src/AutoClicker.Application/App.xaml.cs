@@ -31,7 +31,7 @@ namespace AutoClicker
 #endif
             Settings = new(SettingsFile);
 
-            new MainWindow().Show();
+            new Windows.MainWindow().Show();
 
             Logger = new();
 
