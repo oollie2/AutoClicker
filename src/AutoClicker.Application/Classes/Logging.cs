@@ -12,7 +12,7 @@ namespace AutoClicker.Classes
 {
     public class Logging
     {
-        private Logger _logger;
+        public Logger Log;
         private bool _exceptionLogging;
         private LoggingConfiguration config;
         private string _exceptionLocation;
@@ -34,7 +34,10 @@ namespace AutoClicker.Classes
         }
         public Logging()
         {
-            ExceptionLogging = false;
+            ExceptionLogging = Settings.Main.TurnOnExceptionLogging;
+            ExceptionLocation = Environment.ExpandEnvironmentVariables(Settings.Main.ExceptionLogLocation);
+            Directory.CreateDirectory(Path.GetDirectoryName(ExceptionLocation));
+            ConfigureLogging();
         }
         /// <summary>
         /// Function to delete log files older than 5 days.
@@ -46,7 +49,7 @@ namespace AutoClicker.Classes
             files.AddRange(dirinfo.GetFiles().OrderBy(x => x.CreationTime).ToArray());
             foreach (FileInfo file in files)
             {
-                if ((DateTime.UtcNow - file.CreationTime).Days > 5)
+                if ((DateTime.UtcNow - file.CreationTime).Days > Settings.Main.DaysToKeepLogs)
                 {
                     file.Delete();
                 }
@@ -63,16 +66,19 @@ namespace AutoClicker.Classes
             if (ExceptionLogging)
             {
                 config = new();
-                Directory.CreateDirectory(ExceptionLocation);
-                FileTarget logfile = new("EXCEPTION-LOG") { FileName = ExceptionLocation + "ExceptionLog-" + DateTime.Now.ToString("dd-MMM-yyyy") + ".txt" };
+                FileTarget logfile = new("EXCEPTION-LOG")
+                {
+                    FileName = Path.Join(ExceptionLocation,
+                    "ExceptionLog-" + DateTime.Now.ToString("dd-MMM-yyyy") + ".txt")
+                };
                 config.AddRule(LogLevel.Debug, LogLevel.Fatal, logfile);
                 LogManager.Configuration = config;
-                _logger = LogManager.GetLogger("EXCEPTION-LOG");
+                Log = LogManager.GetLogger("EXCEPTION-LOG");
                 SetupExceptionHandling();
             }
             else
             {
-                _logger = null;
+                Log = null;
             }
         }
         private void SetupExceptionHandling()
@@ -95,24 +101,45 @@ namespace AutoClicker.Classes
         private void LogUnhandledException(Exception exception, string source)
         {
             string message = $"Unhandled exception ({source})";
+            string version = "";
+#if DEBUG
+            version = "AutoClicker " + Assembly.GetEntryAssembly().GetName().Version.Major + "." +
+    Assembly.GetEntryAssembly().GetName().Version.Minor + "." + Assembly.GetEntryAssembly().GetName().Version.Build + " Debug";
+#else
+            version = "AutoClicker " + Assembly.GetEntryAssembly().GetName().Version.Major + "." +
+                Assembly.GetEntryAssembly().GetName().Version.Minor + "." + Assembly.GetEntryAssembly().GetName().Version.Build;
+#endif
             try
             {
-                message = string.Format("\r\nUnhandled exception in {0} v{1}:\r\n\r\n" +
-                    " - Source: " + source + "\r\n" +
-                    " - Message: " + exception.Message + "\r\n" +
-                    " - Data: " + exception.Data + "\r\n" +
-                    " - Target Site: " + exception.TargetSite + "\r\n" +
-                    " - Stack Trace: " + exception.StackTrace.Split(new[] { '\r', '\n' }).FirstOrDefault() + "\r\n",
-                    Assembly.GetExecutingAssembly().GetName().Name,
-                    Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+                if (exception.Source != null && exception.StackTrace != null && exception.TargetSite != null)
+                {
+                    message = string.Format("\r\nUnhandled exception in {0} v{1}:\r\n\r\n" +
+                        " - Source: " + source + "\r\n" +
+                        " - Message: " + exception.Message + "\r\n" +
+                        " - Data: " + exception.Data + "\r\n" +
+                        " - Target Site: " + exception.TargetSite + "\r\n" +
+                        " - Stack Trace: " + exception.StackTrace.Split(new[] { '\r', '\n' }).FirstOrDefault() + "\r\n",
+                        " - Parameter Name: " + exception.Source + "\r\n" +
+                        Assembly.GetExecutingAssembly().GetName().Name,
+                        version);
+                }
+                else
+                {
+                    message = string.Format("\r\nUnhandled exception in {0} v{1}:\r\n\r\n" +
+                        " - Message: " + exception.Message + "\r\n" +
+                        " - Data: " + exception.Data + "\r\n" +
+                        " - Parameter Name: " + exception.Source + "\r\n" +
+                        Assembly.GetExecutingAssembly().GetName().Name,
+                        version);
+                }
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Exception in LogUnhandledException");
+                Log.Error(ex, "Exception in LogUnhandledException");
             }
             finally
             {
-                _logger.Error(exception, message);
+                Log.Error(exception, message);
             }
         }
         private void ResetLogger()
@@ -130,7 +157,7 @@ namespace AutoClicker.Classes
                 e.SetObserved();
             };
             config = null;
-            _logger = null;
+            Log = null;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoClicker.Classes;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 
 namespace AutoClicker
@@ -10,21 +11,36 @@ namespace AutoClicker
     /// </summary>
     public partial class App : Application
     {
-        private Logging Logger;
-        public static string LogLocation = Environment.ExpandEnvironmentVariables(@"%APPDATA%\oollie34\AutoClicker\Logs\");
+        public static Settings Settings { get; set; }
+        public static string SettingsFile { get; set; }
+        private Logging Logger { get; set; }
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Set up custom settings as everything else reads from that
+#if DEBUG
+            SettingsFile = Environment.ExpandEnvironmentVariables(@"%APPDATA%\" +
+                ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company + @"\" +
+                Assembly.GetExecutingAssembly().GetName().Name +
+                @"\Settings\settings-debug.xml");
+
+#else
+        SettingsFile = Environment.ExpandEnvironmentVariables(@"%APPDATA%\" +
+            ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company + @"\" +
+            Assembly.GetExecutingAssembly().GetName().Name +
+            @"\Settings\settings.xml");
+#endif
+            Settings = new(SettingsFile);
+
+            new MainWindow().Show();
+
             Logger = new();
-            Logger.ExceptionLocation = LogLocation;
-            Logger.ExceptionLogging = true;
-            Logger.DeleteOld();
 
             Updater updater = new();
             await updater.CheckVersionsAsync();
             if(updater.State == UpdateState.UpdateAvailable)
             {
                 MessageBoxResult update = MessageBox.Show("A new update is available, would you like to download and install?",
-                    "Update Check",
+                    "Update Available",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
                 if(update == MessageBoxResult.Yes)
@@ -34,7 +50,6 @@ namespace AutoClicker
                 }
             }
             File.Delete(updater.DownloadLocation);
-            new MainWindow().Show();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
