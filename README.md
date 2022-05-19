@@ -21,11 +21,3 @@ A release will be available once the below list has been completed.
 ### 1.0.1
 
 * Fix for an issue where the app could display and attach to the same process multiple times.
-
-### 1.1.0
-
-* Application checks for an update from this repository on boot.
-* Start can be delayed by a user defined amount of seconds.
-* <em>User settings allowing the application to be customised further.
-* Improved message boxes.
-* Ability to set hotkeys</em>
