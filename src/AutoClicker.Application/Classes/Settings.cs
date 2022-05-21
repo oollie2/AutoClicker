@@ -42,6 +42,14 @@ public class AutoClickerSettings
         set { _millisecondStartDelay = value; }
     }
     #endregion
+    #region CheckForUpdates
+    internal bool _checkForUpdates = true;
+    public bool CheckForUpdates
+    {
+        get { return _checkForUpdates; }
+        set { _checkForUpdates = value; }
+    }
+    #endregion
 }
 public class Settings : IDisposable
 {

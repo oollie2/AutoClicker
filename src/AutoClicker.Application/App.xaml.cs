@@ -35,23 +35,25 @@ namespace AutoClicker
 
             Logger = new();
 
-            Updater updater = new();
-            await updater.CheckVersionsAsync();
-            if(updater.State == UpdateState.UpdateAvailable)
+            if (Settings.Main.CheckForUpdates)
             {
-                MessageBoxResult update = MessageBox.Show("A new update is available, would you like to download and install?",
-                    "Update Available",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-                if(update == MessageBoxResult.Yes)
+                Updater updater = new();
+                await updater.CheckVersionsAsync();
+                if (updater.State == UpdateState.UpdateAvailable)
                 {
-                    updater.PerformUpdate();
-                    return;
+                    MessageBoxResult update = MessageBox.Show("A new update is available, would you like to download and install?",
+                        "Update Available",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+                    if (update == MessageBoxResult.Yes)
+                    {
+                        updater.PerformUpdate();
+                        return;
+                    }
                 }
+                File.Delete(updater.DownloadLocation);
             }
-            File.Delete(updater.DownloadLocation);
         }
-
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             Logger.ExceptionLogging = false;
