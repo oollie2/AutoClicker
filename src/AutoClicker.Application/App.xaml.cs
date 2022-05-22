@@ -56,9 +56,7 @@ namespace AutoClicker
         }
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            Logger.ExceptionLogging = false;
-            Logger = null;
-            Current.Shutdown();
+            Settings.Dispose();
             Environment.Exit(0);
         }
     }
