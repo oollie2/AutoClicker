@@ -33,7 +33,7 @@ public class Logging
     }
     public Logging()
     {
-        ExceptionLogging = Settings.Main.TurnOnExceptionLogging;
+        ExceptionLogging = Settings.Main.ExceptionLogging;
         ExceptionLocation = Environment.ExpandEnvironmentVariables(Settings.Main.ExceptionLogLocation);
         Directory.CreateDirectory(Path.GetDirectoryName(ExceptionLocation));
         ConfigureLogging();
@@ -43,14 +43,17 @@ public class Logging
     /// </summary>
     public void DeleteOld()
     {
-        DirectoryInfo dirinfo = new DirectoryInfo(ExceptionLocation);
-        ArrayList files = new ArrayList();
-        files.AddRange(dirinfo.GetFiles().OrderBy(x => x.CreationTime).ToArray());
-        foreach (FileInfo file in files)
+        if(Settings.Main.ExceptionLogDays > 0)
         {
-            if ((DateTime.UtcNow - file.CreationTime).Days > Settings.Main.DaysToKeepLogs)
+            DirectoryInfo dirinfo = new DirectoryInfo(ExceptionLocation);
+            ArrayList files = new ArrayList();
+            files.AddRange(dirinfo.GetFiles().OrderBy(x => x.CreationTime).ToArray());
+            foreach (FileInfo file in files)
             {
-                file.Delete();
+                if ((DateTime.UtcNow - file.CreationTime).Days > Settings.Main.ExceptionLogDays)
+                {
+                    file.Delete();
+                }
             }
         }
     }

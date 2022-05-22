@@ -8,12 +8,12 @@ using System.Xml.Serialization;
 namespace AutoClicker.Classes;
 public class AutoClickerSettings
 {
-    #region TurnOnExceptionLogging
-    internal bool _turnOnExceptionLogging = true;
-    public bool TurnOnExceptionLogging
+    #region ExceptionLogging
+    internal bool _exceptionLogging = true;
+    public bool ExceptionLogging
     {
-        get { return _turnOnExceptionLogging; }
-        set { _turnOnExceptionLogging = value; }
+        get { return _exceptionLogging; }
+        set { _exceptionLogging = value; }
     }
     #endregion
     #region ExceptionLogLocation
@@ -26,12 +26,12 @@ public class AutoClickerSettings
         set { _exceptionLogLocation = value; }
     }
     #endregion
-    #region DaysToKeepLogs
-    internal int _daysToKeepLogs = 5;
-    public int DaysToKeepLogs
+    #region ExceptionLogDays
+    internal int _exceptionLogDays = 5;
+    public int ExceptionLogDays
     {
-        get { return _daysToKeepLogs; }
-        set { _daysToKeepLogs = value; }
+        get { return _exceptionLogDays; }
+        set { _exceptionLogDays = value; }
     }
     #endregion
     #region MillisecondStartDelay
