@@ -11,4 +11,4 @@
 | PlayHotkeys       | <p align="center">True</p>                                  | A list of integers, matching a virutal key code. https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN. Key presses are not ordered, and must be added to the array with starting and enclosing int tags. 
 |
 
-In the future a settings window may be added to simplify this further, an example settings.xml file is included to show possible key code values.
+In the future a settings window may be added to simplify this further, an example settings_example.xml file is included to show L-CTRL & E for start and R for stop.
