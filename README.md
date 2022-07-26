@@ -26,5 +26,5 @@ A release will be available once the below list has been completed.
 
 * Application checks for an update from this repository on boot.
 * Start can be delayed by a user defined amount of seconds.
-* User settings allowing the application to be customised further. Located in: %APPDATA%\oollie34\Auto Clicker\Settings\ - view [a relative link](Settings.md) for more information.
+* User settings allowing the application to be customised further. Located in: %APPDATA%\oollie34\Auto Clicker\Settings\ - view [Settings](Settings.md) for more information.
 * Ability to set hotkeys for start and stop.
