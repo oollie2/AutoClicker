@@ -7,6 +7,8 @@
 | ExceptionLogDays      | <p align="center">5</p>                                     | This is how long the application will store logs for, if a log is longer   than the defined amount the file is deleted. If the value is 0 logs are not   deleted.                                                                                      |
 | MillisecondStartDelay | <p align="center">5000</p>                                  | After pressing the start button, the application will wait this long in   miliseconds before beginning.                                                                                                                                                |
 | CheckForUpdates       | <p align="center">True</p>                                  | If the value is set as true, the application will automatically check for   an update every time it is started.                                                                                                                                        |
+| PauseHotkeys       | <p align="center">True</p>                                  | A list of integers, matching a virutal key code. https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN. Key presses are not ordered, and must be added to the array with starting and enclosing int tags. 
+| PlayHotkeys       | <p align="center">True</p>                                  | A list of integers, matching a virutal key code. https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN. Key presses are not ordered, and must be added to the array with starting and enclosing int tags. 
+|
 
-Settings can currently be modified by navigating to <i>%APPDATA%\oollie34\Auto Clicker\Settings\ </i> and directly changing the file. Any changes made will require an application reboot. 
-In the future a settings window may be added to simplify this further.
+In the future a settings window may be added to simplify this further, an example settings.xml file is included to show possible key code values.

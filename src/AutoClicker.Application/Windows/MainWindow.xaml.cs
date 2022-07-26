@@ -16,13 +16,32 @@ public partial class MainWindow : Window
     private MainBindings MainBindings { get; set; }
     private readonly Dictionary<Process, List<Clicker>> instanceClickers = new();
     private GetInstances Instances;
+    private readonly Hotkeys hotkeys;
+    private bool Started = false;
     public MainWindow()
     {
         InitializeComponent();
         MainBindings = new();
         DataContext = MainBindings;
+        hotkeys = new();
+        hotkeys.Play += Hotkey_Play;
+        hotkeys.Pause += Hotkey_Pause;
+    }
+    private void Hotkey_Pause()
+    {
+        if (Started)
+            Stop();
+    }
+    private void Hotkey_Play()
+    {
+        if (!Started)
+            InitStart();
     }
     private void LeftButton_Click(object sender, RoutedEventArgs e)
+    {
+        InitStart();
+    }
+    private void InitStart()
     {
         if (MainBindings == null)
             return;
@@ -51,6 +70,7 @@ public partial class MainWindow : Window
     }
     private void Start()
     {
+        Started = true;
         MainBindings.IndicatorLabel = "Started At: " + DateTime.Now.ToString("MMMM dd HH:mm tt");
         MainBindings.IndicatorLabelVisible = Visibility.Visible;
         RunApplication();
@@ -69,11 +89,13 @@ public partial class MainWindow : Window
     }
     private bool CheckBools()
     {
-        List<bool> bools = new();
-        bools.Add(MainBindings.LeftTopCheckBox);
-        bools.Add(MainBindings.LeftBottomCheckBox);
-        bools.Add(MainBindings.RightTopCheckBox);
-        bools.Add(MainBindings.RightBottomCheckBox);
+        List<bool> bools = new()
+        {
+            MainBindings.LeftTopCheckBox,
+            MainBindings.LeftBottomCheckBox,
+            MainBindings.RightTopCheckBox,
+            MainBindings.RightBottomCheckBox
+        };
         if (bools.IndexOf(true) > -1) return true;
         else return false;
 
@@ -84,43 +106,47 @@ public partial class MainWindow : Window
     }
     private void RunApplication()
     {
-        foreach (Process process in Instances.matchingProcesses)
+        if(Instances != null)
         {
-
-            IntPtr processHandle = process.MainWindowHandle;
-            FocusToggle(processHandle);
-
-            MainBindings.LeftButtonEnabled = false;
-            MainBindings.LeftButtonContent = "Starting In: ";
-            MainBindings.LeftButtonContent += 5;
-            for (var i = 4; i > 0; i--)
+            foreach (Process process in Instances.matchingProcesses)
             {
-                MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
-                MainBindings.LeftButtonContent += i;
-            }
 
-            MainBindings.LeftButtonContent = "Running...";
-            MainBindings.ApplicationEnabled = false;
+                IntPtr processHandle = process.MainWindowHandle;
+                FocusToggle(processHandle);
 
-            if (MainBindings.RightTopCheckBox || MainBindings.RightBottomCheckBox)
-            {
-                Clicker clicker = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1, processHandle);
-                AddToInstanceClickers(process, clicker);
-                clicker.Start(Convert.ToDouble(MainBindings.RightUpDownText));
-            }
+                MainBindings.LeftButtonEnabled = false;
+                MainBindings.LeftButtonContent = "Starting In: ";
+                MainBindings.LeftButtonContent += 5;
+                for (var i = 4; i > 0; i--)
+                {
+                    MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
+                    MainBindings.LeftButtonContent += i;
+                }
 
-            Thread.Sleep(100);
-            if (MainBindings.LeftTopCheckBox || MainBindings.LeftBottomCheckBox)
-            {
-                Clicker clicker = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1, processHandle);
-                AddToInstanceClickers(process, clicker);
-                clicker.Start(Convert.ToDouble(MainBindings.LeftUpDownText));
+                MainBindings.LeftButtonContent = "Running...";
+                MainBindings.ApplicationEnabled = false;
+
+                if (MainBindings.RightTopCheckBox || MainBindings.RightBottomCheckBox)
+                {
+                    Clicker clicker = new(Win32Api.WmRbuttonDown, Win32Api.WmRbuttonDown + 1, processHandle);
+                    AddToInstanceClickers(process, clicker);
+                    clicker.Start(Convert.ToDouble(MainBindings.RightUpDownText));
+                }
+
+                Thread.Sleep(100);
+                if (MainBindings.LeftTopCheckBox || MainBindings.LeftBottomCheckBox)
+                {
+                    Clicker clicker = new(Win32Api.WmLbuttonDown, Win32Api.WmLbuttonDown + 1, processHandle);
+                    AddToInstanceClickers(process, clicker);
+                    clicker.Start(Convert.ToDouble(MainBindings.LeftUpDownText));
+                }
+                MainBindings.RightButtonEnabled = true;
             }
-            MainBindings.RightButtonEnabled = true;
         }
     }
     private void Stop()
     {
+        Started = false;
         MainBindings.RightButtonEnabled = false;
         foreach (var clickers in instanceClickers.Values)
         {
@@ -148,5 +174,9 @@ public partial class MainWindow : Window
     {
         Thread.Sleep(200);
         Win32Api.SetForegroundWindow(hwnd);
+    }
+    private void Window_Closed(object sender, EventArgs e)
+    {
+        hotkeys.Dispose();
     }
 }

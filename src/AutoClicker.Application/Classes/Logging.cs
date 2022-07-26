@@ -105,7 +105,7 @@ public class Logging
         string message = $"Unhandled exception ({source})";
         string version = "";
 #if DEBUG
-        version = "AutoClicker " + Assembly.GetEntryAssembly().GetName().Version.Major + "." +
+        version = "Auto Clicker " + Assembly.GetEntryAssembly().GetName().Version.Major + "." +
 Assembly.GetEntryAssembly().GetName().Version.Minor + "." + Assembly.GetEntryAssembly().GetName().Version.Build + " Debug";
 #else
         version = "AutoClicker " + Assembly.GetEntryAssembly().GetName().Version.Major + "." +

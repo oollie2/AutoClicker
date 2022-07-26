@@ -22,7 +22,7 @@ internal class Updater
     private string[] VersionLabels = { "alpha", "beta" };
     public Updater()
     {
-        DownloadLocation = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Downloads\AutoClicker.msi");
+        DownloadLocation = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\Temp\AutoClicker.msi");
     }
     /// <summary>
     /// Here we check for the latest release tag available on github.
@@ -88,11 +88,15 @@ internal class Updater
     private void RunUpdate()
     {
         using Process installerProcess = new();
-        ProcessStartInfo processInfo = new();
-        processInfo.FileName = "cmd.exe";
-        processInfo.Arguments = "/C start " + DownloadLocation;
-        processInfo.UseShellExecute = false;
-        processInfo.CreateNoWindow = true;
+        ProcessStartInfo processInfo = new()
+        {
+            FileName = Environment.ProcessPath,
+            Arguments = " -update " + DownloadLocation,
+            UseShellExecute = true,
+            CreateNoWindow = true,
+            Verb = "runas",
+            WindowStyle = ProcessWindowStyle.Hidden,
+        };
         installerProcess.StartInfo = processInfo;
         installerProcess.Start();
         Environment.Exit(0);

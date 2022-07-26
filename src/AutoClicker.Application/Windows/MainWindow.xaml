@@ -10,7 +10,8 @@
         Width="490"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Closed="Window_Closed">
     <Grid Margin="0,0,0,0">
         <StackPanel Margin="0,0,240,135">
             <Label Height="30"

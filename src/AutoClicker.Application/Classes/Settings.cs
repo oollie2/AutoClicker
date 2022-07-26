@@ -50,6 +50,24 @@ public class AutoClickerSettings
         set { _checkForUpdates = value; }
     }
     #endregion
+    #region PauseHotkeys
+    //https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+    internal int[] _pauseHotkeys = new int[2] { 162, 69 };
+    public int[] PauseHotkeys
+    {
+        get { return _pauseHotkeys; }
+        set { _pauseHotkeys = value; }
+    }
+    #endregion
+    #region PlayHotkeys
+    //https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+    internal int[] _playHotkeys = Array.Empty<int>();
+    public int[] PlayHotkeys
+    {
+        get { return _playHotkeys; }
+        set { _playHotkeys = value; }
+    }
+#endregion
 }
 public class Settings : IDisposable
 {
@@ -91,6 +109,7 @@ public class Settings : IDisposable
         try
         {
             Main = (AutoClickerSettings)Serializer.Deserialize(fs);
+            System.Diagnostics.Debug.WriteLine(Main.PauseHotkeys[0]);
         }
         catch (InvalidOperationException ex)
         {
