@@ -23,7 +23,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         MainBindings = new();
         DataContext = MainBindings;
-        hotkeys = new();
+        hotkeys = new(true);
         hotkeys.Play += Hotkey_Play;
         hotkeys.Pause += Hotkey_Pause;
     }
@@ -119,7 +119,7 @@ public partial class MainWindow : Window
                 MainBindings.LeftButtonContent += 5;
                 for (var i = 4; i > 0; i--)
                 {
-                    MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
+                    MainBindings.LeftButtonContent = MainBindings.LeftButtonContent.Remove(MainBindings.LeftButtonContent.Length - 1);
                     MainBindings.LeftButtonContent += i;
                 }
 

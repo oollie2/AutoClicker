@@ -9,10 +9,12 @@ public class Hotkeys : IDisposable
 {
     public Action Play { get; set; }
     public Action Pause { get; set; }
-    private List<int> PressedKeys;
+    public List<int> PressedKeys { get; set; }
     private bool disposedValue;
-    public Hotkeys()
+    private readonly bool trigger;
+    public Hotkeys(bool _trigger)
     {
+        trigger = _trigger;
         KeyboardFns.CreateHook();
         PressedKeys = new();
         KeyboardFns.KeyPressed += KeyboardHook_KeyPressed;
@@ -23,7 +25,8 @@ public class Hotkeys : IDisposable
         if (!PressedKeys.Contains(e.KeyCode))
         {
             PressedKeys.Add(e.KeyCode);
-            Trigger();
+            if (trigger)
+                Trigger();
         }
     }
     private void KeyboardFns_KeyReleased(object sender, KeyPressedEventArgs e)
@@ -67,7 +70,7 @@ public sealed class KeyboardFns
     private const int WH_KEYBOARD = 13;
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_KEYUP = 0x0101;
-    private static KeyboardProcess keyboardProc = HookCallback;
+    private static readonly KeyboardProcess keyboardProc = HookCallback;
     private static IntPtr hookID = IntPtr.Zero;
     public static void CreateHook()
     {
@@ -98,16 +101,16 @@ public sealed class KeyboardFns
         return CallNextHookEx(hookID, nCode, wParam, lParam);
     }
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr SetWindowsHookEx(int idHook, KeyboardProcess lpfn, IntPtr hMod, uint dwThreadId);
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern IntPtr GetModuleHandle(string lpModuleName);
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool UnhookWindowsHookEx(IntPtr hhk);
 }

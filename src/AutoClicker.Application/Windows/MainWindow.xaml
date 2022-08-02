@@ -90,7 +90,8 @@
             IsEnabled="{Binding SettingsButtonEnabled}"
             Height="35"
             Width="35"
-            Click="Settings_Click">
+            Click="Settings_Click"
+            ToolTip="Settings">
             <Button.Content>
                 <Image Stretch="Uniform" Source="/Resources/settings.png"></Image>
             </Button.Content>
