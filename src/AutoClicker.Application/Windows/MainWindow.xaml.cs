@@ -179,4 +179,9 @@ public partial class MainWindow : Window
     {
         hotkeys.Dispose();
     }
+
+    private void Settings_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }

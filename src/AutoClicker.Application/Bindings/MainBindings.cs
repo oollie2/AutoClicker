@@ -20,6 +20,7 @@ sealed class MainBindings : INotifyPropertyChanged
             RightButtonContent = "STOP!",
             LeftButtonEnabled = true,
             RightButtonEnabled = false,
+            SettingsButtonEnabled = true,
             ApplicationEnabled = true,
             IndicatorLabelVisible = Visibility.Visible,
             IndicatorLabel = "Idle"
@@ -234,6 +235,22 @@ sealed class MainBindings : INotifyPropertyChanged
             OnPropertyChanged(nameof(RightButtonEnabled));
         }
     }
+    public bool SettingsButtonEnabled
+    {
+        get
+        {
+            if (mainData != null)
+                return mainData.SettingsButtonEnabled;
+            else
+                return false;
+        }
+        set
+        {
+            if (SettingsButtonEnabled != value)
+                mainData.SettingsButtonEnabled = value;
+            OnPropertyChanged(nameof(SettingsButtonEnabled));
+        }
+    }
     public bool ApplicationEnabled
     {
         get
@@ -287,6 +304,7 @@ sealed class MainData
     public string IndicatorLabel { get; set; }
     public bool LeftButtonEnabled { get; set; }
     public bool RightButtonEnabled { get; set; }
+    public bool SettingsButtonEnabled { get; set; }
     public bool ApplicationEnabled { get; set; }
     public Visibility IndicatorLabelVisible { get; set; }
 }

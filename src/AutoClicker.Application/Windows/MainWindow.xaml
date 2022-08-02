@@ -68,8 +68,32 @@
                 <mah:NumericUpDown Minimum="0" Grid.Row="2" Grid.Column="1" Width="100" Height="23" Value="{Binding RightUpDownText, FallbackValue=0}" IsEnabled="{Binding ApplicationEnabled}"/>
             </Grid>
         </StackPanel>
-        <Button Margin="100,202,290,61" Content="{Binding LeftButtonContent, FallbackValue=Start}" IsEnabled="{Binding LeftButtonEnabled}" Click="LeftButton_Click"/>
-        <Button Margin="300,202,90,61" Content="{Binding RightButtonContent, FallbackValue=Stop}" IsEnabled="{Binding RightButtonEnabled}" Click="RightButton_Click"/>
-        <Label Width="490" Content="{Binding IndicatorLabel, FallbackValue=Idle}" Margin="0,249,0,29" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Visibility="{Binding IndicatorLabelVisible, FallbackValue=Visible}"/>
+        <Button
+            Margin="100,202,290,61" 
+            Content="{Binding LeftButtonContent, FallbackValue=Start}" 
+            IsEnabled="{Binding LeftButtonEnabled}" 
+            Click="LeftButton_Click"/>
+        <Button
+            Margin="300,202,90,61"
+            Content="{Binding RightButtonContent, FallbackValue=Stop}"
+            IsEnabled="{Binding RightButtonEnabled}"
+            Click="RightButton_Click"/>
+        <Label 
+            Width="490" 
+            Content="{Binding IndicatorLabel, FallbackValue=Idle}"
+            Margin="0,249,0,29"
+            HorizontalAlignment="Center"
+            HorizontalContentAlignment="Center"
+            Visibility="{Binding IndicatorLabelVisible, FallbackValue=Visible}"/>
+        <Button 
+            Margin="443,258,10,10"
+            IsEnabled="{Binding SettingsButtonEnabled}"
+            Height="35"
+            Width="35"
+            Click="Settings_Click">
+            <Button.Content>
+                <Image Stretch="Uniform" Source="/Resources/settings.png"></Image>
+            </Button.Content>
+        </Button>
     </Grid>
 </Window>
