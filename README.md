@@ -2,7 +2,6 @@
 
 A WPF based fork of https://github.com/smith-j-travis/MinecraftAutoClicker
 Currently targets Minecraft, RL Craft and Java Windows.
-A release will be available once the below list has been completed.
 
 ## Features:
 
