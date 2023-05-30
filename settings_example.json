@@ -1,0 +1,14 @@
+﻿{
+  "ExceptionLogging": true,
+  "ExceptionLogLocation": "C:\\Users\\ollie.sharratt\\AppData\\Roaming\\oollie34\\Auto Clicker\\Logs\\",
+  "ExceptionLogDays": 5,
+  "MillisecondStartDelay": 5000,
+  "CheckForUpdates": true,
+  "PauseHotkeys": [
+    162,
+    69
+  ],
+  "PlayHotkeys": [
+    82
+  ]
+}

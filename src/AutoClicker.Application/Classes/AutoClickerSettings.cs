@@ -76,7 +76,7 @@ public class AutoClickerSettings
     #endregion
     #region PlayHotkeys
     //https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
-    internal int[] _playHotkeys = Array.Empty<int>();
+    internal int[] _playHotkeys = new int[1] { 82 };
     /// <summary>
     /// A list of integers, matching a virtual key code. https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN. Key presses are not ordered, and must be added to the array with starting and enclosing int tags.
     /// </summary>

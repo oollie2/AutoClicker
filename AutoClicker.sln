@@ -9,7 +9,11 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "AutoClicker.Installer", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6156A3EB-7C1B-4CF8-8B74-96768DBA6CBF}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		README.md = README.md
+		Settings.md = Settings.md
+		settings_example.json = settings_example.json
 	EndProjectSection
 EndProject
 Global
