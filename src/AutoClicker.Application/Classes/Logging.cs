@@ -33,8 +33,8 @@ public class Logging
     }
     public Logging()
     {
-        ExceptionLogging = Settings.Main.ExceptionLogging;
-        ExceptionLocation = Environment.ExpandEnvironmentVariables(Settings.Main.ExceptionLogLocation);
+        ExceptionLogging = Settings<AutoClickerSettings>.Main.ExceptionLogging;
+        ExceptionLocation = Environment.ExpandEnvironmentVariables(Settings<AutoClickerSettings>.Main.ExceptionLogLocation);
         Directory.CreateDirectory(Path.GetDirectoryName(ExceptionLocation));
         ConfigureLogging();
     }
@@ -43,14 +43,14 @@ public class Logging
     /// </summary>
     public void DeleteOld()
     {
-        if(Settings.Main.ExceptionLogDays > 0)
+        if(Settings<AutoClickerSettings>.Main.ExceptionLogDays > 0)
         {
-            DirectoryInfo dirinfo = new DirectoryInfo(ExceptionLocation);
-            ArrayList files = new ArrayList();
+            DirectoryInfo dirinfo = new(ExceptionLocation);
+            ArrayList files = new();
             files.AddRange(dirinfo.GetFiles().OrderBy(x => x.CreationTime).ToArray());
             foreach (FileInfo file in files)
             {
-                if ((DateTime.UtcNow - file.CreationTime).Days > Settings.Main.ExceptionLogDays)
+                if ((DateTime.UtcNow - file.CreationTime).Days > Settings<AutoClickerSettings>.Main.ExceptionLogDays)
                 {
                     file.Delete();
                 }

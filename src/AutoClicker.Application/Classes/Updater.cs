@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AutoClicker.Classes;
-internal class Updater
+internal partial class Updater
 {
     private GitHubClient client;
     private IReadOnlyList<Release> releases;
@@ -25,7 +25,7 @@ internal class Updater
         DownloadLocation = Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\Temp\AutoClicker.msi");
     }
     /// <summary>
-    /// Here we check for the latest release tag available on github.
+    /// Here we check for the latest release tag available on GitHub.
     /// The tags should be formatted such as 1.0.0 with no other information.
     /// It is possible that an alpha / beta tag is present. This class will handle that and return a different state.
     /// </summary>
@@ -35,7 +35,7 @@ internal class Updater
         client = new(new ProductHeaderValue("AutoClickerUpdate"));
         releases = await client.Repository.Release.GetAll(OwnerName, RepoName);
         string tagName = releases[0].TagName;
-        Version latestGitHubVersion = new(Regex.Match(tagName, @"([\d\.]+)").Groups[0].Value);
+        Version latestGitHubVersion = new(VersionTag().Match(tagName).Groups[0].Value);
         Version localVersion = new(Assembly.GetEntryAssembly().GetName().Version.Major + "." +
             Assembly.GetEntryAssembly().GetName().Version.Minor + "." + Assembly.GetEntryAssembly().GetName().Version.Build);
         int versionComparison = localVersion.CompareTo(latestGitHubVersion);
@@ -65,9 +65,11 @@ internal class Updater
     {
         var assets = await client.Repository.Release.GetAllAssets(OwnerName, RepoName, releases[0].Id);
         HttpClientWithProgress httpClient = new(assets[0].BrowserDownloadUrl, DownloadLocation);
-        downloadBindings = new();
-        downloadBindings.WindowTitle = "Downloading Update " + releases[0].TagName;
-        downloadBindings.FileName = DownloadLocation;
+        downloadBindings = new()
+        {
+            WindowTitle = "Downloading Update " + releases[0].TagName,
+            FileName = DownloadLocation
+        };
         downloadFile = new DownloadFile(downloadBindings);
         downloadFile.Show();
         httpClient.ProgressChanged += HttpClient_ProgressChanged;
@@ -101,6 +103,9 @@ internal class Updater
         installerProcess.Start();
         Environment.Exit(0);
     }
+
+    [GeneratedRegex("([\\d\\.]+)")]
+    private static partial Regex VersionTag();
 }
 public enum UpdateState
 {

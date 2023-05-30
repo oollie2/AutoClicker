@@ -55,7 +55,7 @@ public partial class MainWindow : Window
                 Instances = new();
                 if (Instances.Check())
                 {
-                    DelayedStart(Settings.Main.MillisecondStartDelay);
+                    DelayedStart(Settings<AutoClickerSettings>.Main.MillisecondStartDelay);
                 }
             }
             else

@@ -1,156 +1,164 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NLog;
+using System;
 using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AutoClicker.Classes;
-public class AutoClickerSettings
+/// <summary>
+/// This class configures the serialization and de-serialization of any settings defined within the class T.
+/// Reading and writing are possible to and from any JSON file.
+/// </summary>
+public class Settings<T> where T : new()
 {
-    #region ExceptionLogging
-    internal bool _exceptionLogging = true;
-    public bool ExceptionLogging
-    {
-        get { return _exceptionLogging; }
-        set { _exceptionLogging = value; }
-    }
-    #endregion
-    #region ExceptionLogLocation
-    internal string _exceptionLogLocation = Environment.ExpandEnvironmentVariables(@"%APPDATA%\" +
-            ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company + @"\" +
-            Assembly.GetExecutingAssembly().GetName().Name + @"\Logs\");
-    public string ExceptionLogLocation
-    {
-        get { return _exceptionLogLocation; }
-        set { _exceptionLogLocation = value; }
-    }
-    #endregion
-    #region ExceptionLogDays
-    internal int _exceptionLogDays = 5;
-    public int ExceptionLogDays
-    {
-        get { return _exceptionLogDays; }
-        set { _exceptionLogDays = value; }
-    }
-    #endregion
-    #region MillisecondStartDelay
-    internal int _millisecondStartDelay = 5000;
-    public int MillisecondStartDelay
-    {
-        get { return _millisecondStartDelay; }
-        set { _millisecondStartDelay = value; }
-    }
-    #endregion
-    #region CheckForUpdates
-    internal bool _checkForUpdates = true;
-    public bool CheckForUpdates
-    {
-        get { return _checkForUpdates; }
-        set { _checkForUpdates = value; }
-    }
-    #endregion
-    #region PauseHotkeys
-    //https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
-    internal int[] _pauseHotkeys = new int[2] { 162, 69 };
-    public int[] PauseHotkeys
-    {
-        get { return _pauseHotkeys; }
-        set { _pauseHotkeys = value; }
-    }
-    #endregion
-    #region PlayHotkeys
-    //https://docs.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
-    internal int[] _playHotkeys = Array.Empty<int>();
-    public int[] PlayHotkeys
-    {
-        get { return _playHotkeys; }
-        set { _playHotkeys = value; }
-    }
-#endregion
-}
-public class Settings : IDisposable
-{
+    private readonly static ILogger _logger = LogManager.GetCurrentClassLogger();
     /// <summary>
     /// Our main reference to the individual settings
     /// </summary>
-    public static AutoClickerSettings Main { get; set; }
-    private XmlSerializer Serializer;
-    private readonly XmlWriterSettings XmlWriterSettings;
+    public static T Main { get; set; }
     /// <summary>
     /// The file used to read / write to.
     /// </summary>
-    internal string SettingsFile { get; set; }
+    internal static string SettingsFile { get; set; }
     /// <summary>
-    /// Initiate a new settings object, to read and write user settings to.
+    /// Initiate a new settings object.
     /// </summary>
-    /// <param name="settingsFile">The file path for the xml file</param>
-    public Settings(string settingsFile)
+    public Settings() { }
+    /// <summary>
+    /// Read from the existing settings file, if it does not exist a new one with default values is created.
+    /// </summary>
+    /// <param name="settingsFile">The full file path for the JSON file with extension.</param>
+    public async static Task<bool> Read(string settingsFile)
     {
         SettingsFile = settingsFile;
         Main = new();
-        XmlWriterSettings = new() { Indent = true };
-        Serializer = new(typeof(AutoClickerSettings));
+        _logger.Info($"saving {typeof(T)} to the file {settingsFile}");
         if (File.Exists(SettingsFile))
         {
             // The file has already been created so 
             // there is no need to write defaults.
-            Read();
+            return await Deserialize();
         }
         else
         {
             // No file exists so lets use the default values
-            Write();
+            return await Serialize();
         }
     }
-    private void Read()
+    /// <summary>
+    /// Reads in the JSON file set at SettingsFile, de-serializes this into Main. Settings file will be recreated if unable to de serialize.
+    /// </summary>
+    private async static Task<bool> Deserialize()
     {
-        using FileStream fs = new(SettingsFile, FileMode.Open);
         try
         {
-            Main = (AutoClickerSettings)Serializer.Deserialize(fs);
-            System.Diagnostics.Debug.WriteLine(Main.PauseHotkeys[0]);
+            if (string.IsNullOrEmpty(SettingsFile))
+                return false;
+            using var fileStream = new FileStream(SettingsFile, FileMode.Open,
+                              FileAccess.Read, FileShare.ReadWrite, 4096, useAsync: true);
+            using var sr = new StreamReader(fileStream, true);
+            string contents = await sr.ReadToEndAsync();
+            Main = JsonConvert.DeserializeObject<T>(contents, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented,
+                Error = HandleDeserializationError
+            });
+            fileStream.Flush();
+            fileStream.Close();
+            return true;
         }
-        catch (InvalidOperationException ex)
+        catch (IOException)
         {
-            MessageBox.Show("Current settings file is not compatible with this version of the application, " +
-                "this file will be removed and replaced. The application may require starting again.\r\nDetails: " + ex.Message,
-                "Settings File Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
-            fs.Close();
-            Write();
+            _logger.Warn("Settings file could not be found, a new one will be created");
+            return await Serialize();
+        }
+        catch (JsonSerializationException ex)
+        {
+            if (BackupFile(out string backupFile))
+                _logger.Warn($"Unable to read settings file: {ex.Message} - A backup has been created at {backupFile}");
+            else
+                _logger.Warn($"Unable to read settings file: {ex.Message} - A backup could not be created.");
+            return await Serialize();
         }
     }
-    private void Write()
+    private static bool BackupFile(out string backupFile)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile));
-        using XmlWriter write = XmlWriter.Create(SettingsFile, XmlWriterSettings);
-        Serializer.Serialize(write, Main);
-        write.Close();
+        backupFile = "";
+        if (string.IsNullOrEmpty(SettingsFile))
+            return false;
+        backupFile = string.Format("{0}-{1}",
+            SettingsFile, DateTime.UtcNow.ToString("yyyyMMddHHmmssfff"));
+        File.Copy(SettingsFile, backupFile);
+        return true;
     }
-    public void Reset(AutoClickerSettings settings)
+    /// <summary>
+    /// Serializes Main and writes all into the file defined with SettingsFile.
+    /// </summary>
+    private async static Task<bool> Serialize()
     {
-        using XmlWriter write = XmlWriter.Create(SettingsFile, XmlWriterSettings);
-        Serializer.Serialize(write, settings);
-        write.Close();
+        string contents = JsonConvert.SerializeObject(Main, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            Formatting = Formatting.Indented,
+            Error = HandleSerializationError
+        });
+        return await WriteToFile(contents);
     }
-    public void Reset()
+    private async static Task<bool> WriteToFile(string contents)
     {
-        Main = new();
-        using XmlWriter write = XmlWriter.Create(SettingsFile, XmlWriterSettings);
-        Serializer.Serialize(write, Main);
-        write.Close();
+        if (string.IsNullOrEmpty(SettingsFile))
+            return false;
+        string directory = Path.GetDirectoryName(SettingsFile);
+        if (string.IsNullOrEmpty(directory))
+            return false;
+        Directory.CreateDirectory(directory);
+        FileMode mode = FileMode.Create;
+        if (File.Exists(SettingsFile))
+            mode = FileMode.Truncate;
+        using var fileStream = new FileStream(SettingsFile, mode,
+                               FileAccess.Write, FileShare.ReadWrite, 4096, useAsync: true);
+
+        byte[] settingsBytes = Encoding.UTF8.GetBytes(contents);
+        await fileStream.WriteAsync(settingsBytes);
+        fileStream.Flush();
+        fileStream.Close();
+        return true;
     }
-    public void Save()
+    private static void HandleDeserializationError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
     {
-        Write();
+        if (e.CurrentObject != null)
+            _logger.Error("Unable to deserialize an object located at: {0} - expected type: {1}",
+                e.ErrorContext.Path, e.CurrentObject.GetType().FullName);
+        else
+        {
+            if (BackupFile(out string backupFile))
+                _logger.Warn($"Unable to read settings file: {SettingsFile} - A backup has been created at {backupFile}");
+            else
+                _logger.Warn($"Unable to read settings file: {SettingsFile} - A backup could not be created.");
+        }
+        e.ErrorContext.Handled = true;
     }
-    public void Dispose()
+    private static void HandleSerializationError(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs e)
     {
-        Write();
-        Serializer = null;
-        Main = null;
-        GC.SuppressFinalize(this);
+        if (e.CurrentObject != null)
+            _logger.Error("Unable to serialize an object located at: {0} - expected type: {1}",
+                e.ErrorContext.Path, e.CurrentObject.GetType().FullName);
+        else
+        {
+            if (BackupFile(out string backupFile))
+                _logger.Warn($"Unable to read settings file: {SettingsFile} - A backup has been created at {backupFile}");
+            else
+                _logger.Warn($"Unable to read settings file: {SettingsFile} - A backup could not be created.");
+        }
+        e.ErrorContext.Handled = true;
+    }
+    /// <summary>
+    /// Save the current settings to the file.
+    /// </summary>
+    public async static Task<bool> Save()
+    {
+        return await Serialize();
     }
 }

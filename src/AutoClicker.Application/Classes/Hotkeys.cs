@@ -36,11 +36,11 @@ public class Hotkeys : IDisposable
     }
     private void Trigger()
     {
-        if (Settings.Main.PauseHotkeys.Length > 0 && !Settings.Main.PauseHotkeys.ToList().Except(PressedKeys).Any())
+        if (Settings<AutoClickerSettings>.Main.PauseHotkeys.Length > 0 && !Settings<AutoClickerSettings>.Main.PauseHotkeys.ToList().Except(PressedKeys).Any())
         {
             Pause?.Invoke();
         }
-        if (Settings.Main.PlayHotkeys.Length > 0 && !Settings.Main.PlayHotkeys.ToList().Except(PressedKeys).Any())
+        if (Settings<AutoClickerSettings>.Main.PlayHotkeys.Length > 0 && !Settings<AutoClickerSettings>.Main.PlayHotkeys.ToList().Except(PressedKeys).Any())
         {
             Play?.Invoke();
         }
