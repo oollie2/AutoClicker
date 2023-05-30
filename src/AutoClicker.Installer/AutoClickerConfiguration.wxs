@@ -1,60 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?include $(sys.SOURCEFILEDIR)Includes.wxi?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="$(var.ProductName)" Language="1033" Version="!(bind.fileVersion.AutoClicker)" Manufacturer="$(var.CompanyName)" UpgradeCode="C221698B-2CC9-459B-B0E9-6264D25A4B9B">
-		<Package InstallerVersion="500"
-			Platform="x64"
-			Compressed="yes"
-			InstallScope="perMachine"
-			InstallPrivileges="elevated" />
-		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." AllowSameVersionUpgrades="no"/>
+﻿<?include $(sys.SOURCEFILEDIR)Includes.wxi?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+	<Package Name="$(var.ProductName)" 
+			 Language="1033" 
+			 Version="!(bind.fileVersion.AutoClicker)" 
+			 Manufacturer="$(var.CompanyName)" 
+			 UpgradeCode="C221698B-2CC9-459B-B0E9-6264D25A4B9B">
+		<MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 		<Property Id="REINSTALLMODE" Value="amus" />
 
-		<Condition Message="You must be an administrator to install this product">Privileged</Condition>
+		<Launch Condition="Privileged" Message="You must be an administrator to install this product" />
 		<Feature Id="AutoClicker_Version" Title="AutoClicker_Version" Level="1" />
 		<Feature Id="ProductFeature" Title="AutoClicker Install" Level="1">
-			<ComponentGroupRef Id="AutoClicker_Project"/>
-			<ComponentRef Id="ApplicationShortcutDesktop"/>
-			<ComponentRef Id="ApplicationShortcutStartMenu"/>
+			<ComponentGroupRef Id="AutoClicker_Project" />
+			<ComponentRef Id="ApplicationShortcutDesktop" />
+			<ComponentRef Id="ApplicationShortcutStartMenu" />
 		</Feature>
 
 		<UI Id="UserInterface">
-			<UIRef Id="WixUI_InstallDir" />
+			<ui:WixUI Id="WixUI_InstallDir" />
 			<Property Id="INSTALLDESKTOPSHORTCUT" Value="1" />
-			<Publish Dialog="WelcomeDlg"
-				  Control="Next"
-				  Event="NewDialog"
-				  Value="InstallDirDlg"
-				  Order="2">1</Publish>
-			<Publish Dialog="InstallDirDlg"
-				  Control="Back"
-				  Event="NewDialog"
-				  Value="WelcomeDlg"
-				  Order="2">1</Publish>
-			<Publish Dialog="ExitDialog"
-                Control="Finish"
-                Event="DoAction"
-                Value="LaunchApplication">
-				WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
-			</Publish>
+			<Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2" />
+			<Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2" />
+			<Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
 		</UI>
 		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Auto Clicker" />
 
 		<Property Id="WixShellExecTarget" Value="$(var.AutoClicker.Application.TargetDir)\Auto Clicker.exe" />
-		<CustomAction Id="LaunchApplication"
-			BinaryKey="WixCA"
-			DllEntry="WixShellExec"
-			Impersonate="yes" />
+		<CustomAction Id="LaunchApplication" DllEntry="WixShellExec" Impersonate="yes" BinaryRef="Wix4UtilCA_X86" />
 
 		<UIRef Id="WixUI_ErrorProgressText" />
 		
-		<UIRef Id="WixUI_InstallDir" />
+		<ui:WixUI Id="WixUI_InstallDir" />
 		<UIRef Id="WixUI_ErrorProgressText" />
-		<Property Id="DISABLEADVTSHORTCUTS" Value="1"/>
+		<Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFiles64Folder">
+		
+	
+			<StandardDirectory Id="ProgramFiles64Folder">
 				<Directory Id="ManufacturerFolder" Name="$(var.CompanyName)">
 					<Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
 						<Component Feature="AutoClicker_Version">
@@ -62,53 +45,29 @@
 						</Component>
 					</Directory>
 				</Directory>
-			</Directory>
+			</StandardDirectory>
 
-			<Directory Id="DesktopFolder" Name="Desktop">
-				<Component Id="ApplicationShortcutDesktop" Guid="{55279A83-A345-4A4C-A8E0-5513417FB457}">
-					<Condition>INSTALLDESKTOPSHORTCUT</Condition>
-					<Shortcut Id="ApplicationDesktopShortcut"
-						Name="Auto Clicker"
-						Description="Launch Auto Clicker"
-						Target="[INSTALLFOLDER]Auto Clicker.exe"
-						WorkingDirectory="INSTALLFOLDER"/>
-					<RemoveFolder Id="DesktopFolder" On="uninstall"/>
-					<RegistryValue
-						Root="HKCU"
-						Key="Software\$(var.CompanyName)\$(var.ProductName)"
-						Name="DesktopShortcut"
-						Type="integer"
-						Value="1"
-						KeyPath="yes"/>
+			<StandardDirectory Id="DesktopFolder">
+				<Component Id="ApplicationShortcutDesktop" Guid="{55279A83-A345-4A4C-A8E0-5513417FB457}" Condition="INSTALLDESKTOPSHORTCUT">
+					
+					<Shortcut Id="ApplicationDesktopShortcut" Name="Auto Clicker" Description="Launch Auto Clicker" Target="[INSTALLFOLDER]Auto Clicker.exe" WorkingDirectory="INSTALLFOLDER" />
+					<RemoveFolder Id="DesktopFolder" On="uninstall" />
+					<RegistryValue Root="HKCU" Key="Software\$(var.CompanyName)\$(var.ProductName)" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
 				</Component>
-			</Directory>
+			</StandardDirectory>
 
-			<Directory Id="ProgramMenuFolder" Name="StartMenu">
+			<StandardDirectory Id="ProgramMenuFolder">
 				<Component Id="ApplicationShortcutStartMenu" Guid="{B6F66C7E-D9E2-4D70-B3E7-C264E2A3FF73}">
-					<Shortcut Id="ApplicationStartMenuShortcut"
-						Name="Auto Clicker"
-						Description="Launch Auto Clicker"
-						Target="[INSTALLFOLDER]Auto Clicker.exe"
-						WorkingDirectory="INSTALLFOLDER"/>
-					<RemoveFolder Id="ProgramMenuFolder" On="uninstall"/>
-					<RegistryValue
-						Root="HKCU"
-						Key="Software\$(var.CompanyName)\$(var.ProductName)"
-						Name="StartMenuShortcut"
-						Type="integer"
-						Value="1"
-						KeyPath="yes"/>
+					<Shortcut Id="ApplicationStartMenuShortcut" Name="Auto Clicker" Description="Launch Auto Clicker" Target="[INSTALLFOLDER]Auto Clicker.exe" WorkingDirectory="INSTALLFOLDER" />
+					<RemoveFolder Id="ProgramMenuFolder" On="uninstall" />
+					<RegistryValue Root="HKCU" Key="Software\$(var.CompanyName)\$(var.ProductName)" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
 				</Component>
-			</Directory>
-		</Directory>
-	</Product>
+			</StandardDirectory>
+		</Package>
 	<Fragment>
 		<UI>
 			<Dialog Id="MyInstallDirDlg" Width="370" Height="270" Title="!(loc.InstallDirDlg_Title)">
-				<Control Id="DesktopShortcutCheckBox" Type="CheckBox" X="20" Y="160"
-                         Width="290" Height="17" Property="INSTALLDESKTOPSHORTCUT"
-                         CheckBoxValue="1"
-                         Text="Create a shortcut for this program on the desktop." />
+				<Control Id="DesktopShortcutCheckBox" Type="CheckBox" X="20" Y="160" Width="290" Height="17" Property="INSTALLDESKTOPSHORTCUT" CheckBoxValue="1" Text="Create a shortcut for this program on the desktop." />
 			</Dialog>
 		</UI>
 	</Fragment>
