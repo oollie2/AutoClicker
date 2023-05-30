@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project>
+  <Import Project="Sdk.props" Sdk="WixToolset.Sdk" Version="4.0.0" />
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>build\output\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>build\obj\$(Configuration)\</IntermediateOutputPath>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>{80B5D375-17EE-42A6-9B9D-2214E9B05092}</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>AutoClicker</OutputName>
-    <OutputType>Package</OutputType>
     <Name>AutoClicker.Installer</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -15,10 +14,7 @@
     <IntermediateOutputPath>build\obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
     <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>{80B5D375-17EE-42A6-9B9D-2214E9B05092}</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>AutoClicker</OutputName>
-    <OutputType>Package</OutputType>
     <Name>AutoClicker.Installer</Name>
   </PropertyGroup>
   <PropertyGroup>
@@ -26,25 +22,16 @@
     <IntermediateOutputPath>build\obj\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>Debug</DefineConstants>
     <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>{9278cda9-792c-4823-9688-7722a319adba}</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>AutoClicker</OutputName>
-    <OutputType>Package</OutputType>
     <Name>AutoClicker.Installer</Name>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutoClickerConfiguration.wxs" />
-    <Compile Include="_doNotEdit-PublishOutput.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <WixExtension Include="WixUtilExtension">
-      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
-      <Name>WixUtilExtension</Name>
-    </WixExtension>
-    <WixExtension Include="WixUIExtension">
-      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
-      <Name>WixUIExtension</Name>
-    </WixExtension>
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.0" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0" />
+    <PackageReference Include="WixToolset.Heat" Version="4.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Includes.wxi" />
@@ -60,16 +47,16 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
-  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
-    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
-  </Target>
-  <Target Name="BeforeBuild" DependsOnTargets="ResolveReferences">
-    <PropertyGroup>
-      <LinkerBaseInputPaths>"%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64"</LinkerBaseInputPaths>
-      <DefineConstants>BasePath=%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64</DefineConstants>
-    </PropertyGroup>
-    <HeatDirectory OutputFile="_doNotEdit-PublishOutput.wxs" Directory="%(ProjectReference.RootDir)%(ProjectReference.Directory)build\output\$(Platform)\$(Configuration)\net6.0-windows\win10-x64" DirectoryRefId="INSTALLFOLDER" ComponentGroupName="AutoClicker_Project" SuppressCom="true" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" AutoGenerateGuids="false" GenerateGuidsNow="true" ToolPath="$(WixToolPath)" PreprocessorVariable="var.BasePath" Transforms="RemoveNotRequired.xslt" RunAsSeparateProcess="true" />
-  </Target>
+  <Import Project="Sdk.targets" Sdk="WixToolset.Sdk" Version="4.0.0" />
+  <ItemGroup>
+    <HarvestDirectory Include="$(SolutionDir)src/AutoClicker.Application/build/output/$(Platform)/$(Configuration)/net7.0-windows/win10-x64">
+      <ComponentGroupName>AutoClicker_Project</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressUniqueIds>true</SuppressUniqueIds>
+      <SuppressCom>true</SuppressCom>
+      <SuppressRegistry>true</SuppressRegistry>
+      <Transforms>RemoveNotRequired.xslt</Transforms>
+    </HarvestDirectory>
+  </ItemGroup>
 </Project>
