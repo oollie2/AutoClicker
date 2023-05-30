@@ -1,6 +1,7 @@
 <Project>
- <PropertyGroup>
-   <MSBuildProjectExtensionsPath>$(ProjectDir)build\</MSBuildProjectExtensionsPath>
-	 <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
- </PropertyGroup>
+	<PropertyGroup>
+		<BaseOutputPath>$(ProjectDir)build\</BaseOutputPath>
+		<MSBuildProjectExtensionsPath>$(ProjectDir)build\</MSBuildProjectExtensionsPath>
+		<BaseIntermediateOutputPath>$(ProjectDir)build\obj\</BaseIntermediateOutputPath>
+	</PropertyGroup>
 </Project>

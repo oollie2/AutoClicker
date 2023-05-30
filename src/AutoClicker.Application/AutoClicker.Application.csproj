@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net7.0-windows</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<RuntimeIdentifier>win10-x64</RuntimeIdentifier>
 		<TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
@@ -8,6 +8,7 @@
 		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 		<RootNamespace>AutoClicker</RootNamespace>
 		<AssemblyName>Auto Clicker</AssemblyName>
+		<AssemblyVersion>1.1.1</AssemblyVersion>
 		<Company>oollie34</Company>
 		<PublishUrl>publish\</PublishUrl>
 		<Install>true</Install>
@@ -28,8 +29,7 @@
 		<Platforms>x64</Platforms>
 		<LangVersion>latest</LangVersion>
 		<Authors>oollie34</Authors>
-		<AssemblyVersion>1.1.0</AssemblyVersion>
-		<FileVersion>1.1.0</FileVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<BaseOutputPath>build\output\</BaseOutputPath>
 		<BaseIntermediateOutputPath>build\obj\</BaseIntermediateOutputPath>
 	</PropertyGroup>
@@ -55,7 +55,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="MahApps.Metro" Version="2.4.9" />
-	  <PackageReference Include="NLog" Version="5.1.3" />
-	  <PackageReference Include="Octokit" Version="5.0.2" />
+	  <PackageReference Include="NLog" Version="5.1.5" />
+	  <PackageReference Include="Octokit" Version="6.0.0" />
 	</ItemGroup>
 </Project>
