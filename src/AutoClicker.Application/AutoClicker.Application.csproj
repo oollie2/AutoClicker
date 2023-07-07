@@ -54,7 +54,7 @@
 		<Page Remove="obj\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+	  <PackageReference Include="MahApps.Metro" Version="2.4.10" />
 	  <PackageReference Include="NLog" Version="5.2.1" />
 	  <PackageReference Include="Octokit" Version="7.0.0" />
 	</ItemGroup>
